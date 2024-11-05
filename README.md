@@ -1,93 +1,107 @@
-
-# Leo - Chat Application with Optical Character Recognition (OCR) and Document Processing
+# Leo Chat Application
 
 ## Overview
 
-**Leo** is an innovative chat application designed to provide seamless interaction using voice and video input while leveraging Optical Character Recognition (OCR) capabilities. Built using Python and Streamlit, Leo integrates the Gemini API for generative models, enabling real-time conversations and document processing. 
-
-This project aims to demonstrate advanced features such as real-time video and voice interaction, text extraction from images, and document reading capabilities, making it an ideal tool for various applications.
+The Leo Chat Application allows users to interact with an AI assistant named Leo. Users can upload documents (PDF, DOCX, or images) and engage in conversation with Leo using both text and voice commands. Leo can extract information from the uploaded documents and respond to user queries.
 
 ## Features
 
-- **Voice and Video Interaction**: Users can engage in conversations with Leo using voice commands and real-time video input.
-- **OCR Integration**: Extract text from images and documents using `pytesseract`.
-- **Document Processing**: Read DOCX files and extract content for seamless communication.
-- **User-Friendly Interface**: Built with Streamlit for an interactive and responsive user experience.
+- **Document Upload:** Users can upload PDF and DOCX documents.
+- **Image Processing:** Users can upload images for text extraction using Optical Character Recognition (OCR).
+- **Voice Interaction:** Users can interact with Leo using voice commands.
+- **Text-to-Speech:** Leo can respond to queries using a text-to-speech engine.
+- **Chat History:** Keeps track of previous interactions for a seamless experience.
 
 ## Technologies Used
 
-- Python
-- Streamlit
-- Gemini API (for generative models)
-- Pytesseract (for OCR)
-- Python-docx (for DOCX file handling)
-- OpenCV (for video processing)
+- Streamlit for the web application
+- Google Generative AI for response generation
+- PyMuPDF for PDF reading
+- SpeechRecognition for voice recognition
+- Pyttsx3 for text-to-speech functionality
+- Pytesseract for Optical Character Recognition (OCR)
+- Python-docx for reading DOCX files
+- NumPy and PyAudio for audio processing
+
+## Prerequisites
+
+Before running the application, ensure you have the following installed:
+
+- Python 3.9 or higher
+- Pip (Python package manager)
 
 ## Installation
 
-To set up and run the Leo application on your local machine, follow these steps:
+1. Clone the repository to your local machine:
+   ```bash
+   git clone https://github.com/HarshKalburgi/leo-chat-application.git
+   cd leo-chat-application
+   ```
 
-### Prerequisites
-
-Ensure you have the following installed:
-
-- Python 3.x
-- Anaconda (for managing environments)
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/HarshKalburgi/leo.git
-cd leo
-```
-
-### Step 2: Create a Conda Environment
+2. Create a Conda Environment
 
 Create a new Conda environment for the project:
 
 ```bash
-conda create --name leo_env python=3.8
+conda create --name leo_env python=3.10
 conda activate leo_env
 ```
 
-### Step 3: Install Required Packages
+3. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-Install the necessary Python packages:
+   - **Note**: Make sure to include the required libraries in the `requirements.txt` file:
 
 ```bash
-pip install -r requirements.txt
-```
-
-- **Note**: Make sure to include the required libraries in the `requirements.txt` file:
-
-```
 streamlit
 pytesseract
 python-docx
 opencv-python
 ```
 
-### Step 4: Install Tesseract
+4. **Install the dependencies required for the project:**
+   ```bash
+   pip install streamlit google-generativeai python-dotenv PyMuPDF wave numpy pyaudio SpeechRecognition pyttsx3 Pillow pytesseract python-docx
+   ```
 
-1. Download and install Tesseract from [this link](https://github.com/tesseract-ocr/tesseract).
-2. Add Tesseract to your system's PATH variable. For Windows, the installation path usually looks like this: `C:\Program Files\Tesseract-OCR`.
+5. Install Tesseract OCR:
+   - Download Tesseract from [Tesseract at UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki).
+   - Follow the installation instructions for your operating system.
+   - Ensure Tesseract is added to your system's PATH.
 
-### Step 5: Run the Application
+6. Install Microsoft Word API for handling DOCX files if not already installed.
 
-To start the Leo application, use the following command:
+7. Create a `.env` file in the project root and add your Google Generative AI API key:
+   ```plaintext
+   API_KEY=your_api_key_here
+   ```
 
-```bash
-streamlit run app.py
-```
+## Running the Application
+
+1. Start the Streamlit application:
+   ```bash
+   streamlit run app.py
+   ```
+
+2. Open your web browser and navigate to `http://localhost:8501` to use the application.
 
 ## Usage
 
-1. Open your browser and go to `http://localhost:8501`.
-2. Interact with Leo using voice commands or by uploading images and DOCX files for text extraction and processing.
+1. Upload a PDF or DOCX document (optional).
+2. Speak or type your query in the chat interface.
+3. Leo will respond with relevant information extracted from the document or general knowledge.
+
+## Troubleshooting
+
+- If you encounter issues with voice recognition, ensure your microphone is properly configured.
+- For Tesseract-related errors, verify that Tesseract is installed and correctly added to your PATH.
+- If any required libraries are missing, ensure they are included in the `requirements.txt`.
 
 ## Contributing
 
-Contributions are welcome! If you have suggestions for improvements or new features, please fork the repository and create a pull request.
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
 ## License
 
@@ -96,11 +110,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Thanks to the developers of the libraries used in this project.
-- Special thanks to the OpenAI community for providing resources and support.
 
 ## Contact
 
 For any inquiries or support, feel free to reach out to me:
 
-- **Email**: harshkalburgi02@gmail.com
+- **Email**: harshkalburgi01@gmail.com
 - **GitHub**: [HarshKalburgi](https://github.com/HarshKalburgi)
