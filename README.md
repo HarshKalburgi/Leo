@@ -123,6 +123,3 @@ For any inquiries or support, feel free to reach out to me:
 - **Email**: harshkalburgi01@gmail.com
 <<<<<<< HEAD
 - **GitHub**: [HarshKalburgi](https://github.com/HarshKalburgi)
-=======
-- **GitHub**: [HarshKalburgi](https://github.com/HarshKalburgi)
->>>>>>> f13847e59d8ff4bd7372e49cabae57718076d191
