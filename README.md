@@ -102,5 +102,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any inquiries or support, feel free to reach out to me:
 
-- **Email**: harshkalburgi02@gmail.com
+- **Email**: harshkalburgi01@gmail.com
 - **GitHub**: [HarshKalburgi](https://github.com/HarshKalburgi)
