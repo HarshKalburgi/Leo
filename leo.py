@@ -17,7 +17,7 @@ API_KEY = os.getenv("API_KEY")
 
 # Configure the Leo API SDK
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")  # Change to Gemini 1.0 Ultra
+model = genai.GenerativeModel("gemini-1.5-flash") 
 
 # Streamlit app setup
 st.set_page_config(page_title="Leo Chat Application", layout="wide")
@@ -59,7 +59,7 @@ def recognize_audio(audio_queue):
             except sr.UnknownValueError:
                 continue
             except sr.RequestError:
-                st.error("Could not request results from Google Speech Recognition service.")
+                st.error("Could not request results from Leo Speech Recognition service.")
                 break
 
 # Create an audio queue for threading
