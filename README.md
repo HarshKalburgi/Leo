@@ -46,7 +46,7 @@ cd leo
 Create a new Conda environment for the project:
 
 ```bash
-conda create --name leo_env python=3.8
+conda create --name leo_env python=3.10
 conda activate leo_env
 ```
 
@@ -65,6 +65,11 @@ streamlit
 pytesseract
 python-docx
 opencv-python
+```
+Install the dependencies required for the project:
+
+```bash
+pip install streamlit google-generativeai python-dotenv PyMuPDF wave numpy pyaudio SpeechRecognition pyttsx3 Pillow pytesseract python-docx
 ```
 
 ### Step 4: Install Tesseract
