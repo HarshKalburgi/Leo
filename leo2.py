@@ -11,9 +11,6 @@ import speech_recognition as sr
 import threading
 import queue  # For managing audio processing
 import pyttsx3  # Text-to-speech for Leo's voice responses
-from PIL import Image
-import pytesseract  # For Optical Character Recognition (OCR) on images
-from docx import Document  # For reading DOCX files
 
 # Load environment variables
 load_dotenv()
@@ -41,15 +38,21 @@ if "stop_speech" not in st.session_state:
 # Initialize TTS engine
 engine = pyttsx3.init()
 
-# Function to stop speech
-def stop_speech():
-    st.session_state.stop_speech = True
-    if st.session_state.tts_thread and st.session_state.tts_thread.is_alive():
-        engine.stop()
+# Function to toggle stop/start speech
+def toggle_stop_speech():
+    # Toggle the speech flag
+    st.session_state.stop_speech = not st.session_state.stop_speech
+    if st.session_state.stop_speech:
+        # Stop the TTS engine if currently speaking
+        if st.session_state.tts_thread and st.session_state.tts_thread.is_alive():
+            engine.stop()
+    else:
+        st.info("Leo's speech is re-enabled.")
 
-# Button to stop Leo's speech
-if st.button("🛑 Stop Leo's Voice"):
-    stop_speech()
+# Button to toggle Leo's speech
+if st.button("🛑 Toggle Leo's Voice"):
+    toggle_stop_speech()
+
 
 # Function for Leo to talk back
 def leo_talk(text):
@@ -67,20 +70,6 @@ def extract_text_from_pdf(file):
     text = ""
     for page in pdf_reader:
         text += page.get_text()
-    return text
-
-# Function to read text from DOCX files
-def extract_text_from_docx(file):
-    doc = Document(file)
-    text = ""
-    for para in doc.paragraphs:
-        text += para.text + "\n"
-    return text
-
-# Function to read and extract text from images using OCR
-def extract_text_from_image(image):
-    # Use pytesseract to do OCR on the image
-    text = pytesseract.image_to_string(image)
     return text
 
 # Function to interact with Leo API
@@ -115,31 +104,14 @@ audio_thread = threading.Thread(target=recognize_audio, args=(audio_queue,), dae
 audio_thread.start()
 
 # Upload document
-uploaded_file = st.file_uploader("Upload a document (PDF, DOCX, TXT, or image)", type=["pdf", "docx", "txt", "jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload a PDF document (optional)", type="pdf")
 
 if uploaded_file is not None:
-    file_extension = uploaded_file.name.split('.')[-1].lower()
-
-    if file_extension == "pdf":
-        # Extract text from the uploaded PDF
-        document_text = extract_text_from_pdf(uploaded_file)
-    elif file_extension == "docx":
-        # Extract text from DOCX files
-        document_text = extract_text_from_docx(uploaded_file)
-    elif file_extension in ["jpg", "jpeg", "png"]:
-        # Extract text from images using OCR
-        image = Image.open(uploaded_file)
-        document_text = extract_text_from_image(image)
-    elif file_extension == "txt":
-        # Read text directly from TXT files
-        document_text = str(uploaded_file.read(), 'utf-8')
-    else:
-        st.error("Unsupported file type.")
-        document_text = ""
-
+    # Extract text from the uploaded PDF
+    document_text = extract_text_from_pdf(uploaded_file)
     st.session_state.document_text = document_text
-    st.session_state.messages.clear()  # Clear previous messages
-    st.session_state.messages.append({"role": "assistant", "content": "Document loaded. You can now ask questions about it."})
+    #st.session_state.messages.clear()  # Clear previous messages---------------------------------------------------------------------
+    #st.session_state.messages.append({"role": "assistant", "content": "Document loaded. You can now ask questions about it."})
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -189,7 +161,7 @@ def record_audio():
             st.error("Could not understand audio.")
             return ""
         except sr.RequestError:
-            st.error("Could not request results from Google Speech Recognition service.")
+            st.error("Could not request results from Leo Speech Recognition service.")
             return ""
 
 # Microphone button
