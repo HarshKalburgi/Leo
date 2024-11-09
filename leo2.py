@@ -3,6 +3,9 @@ import streamlit as st
 import google.generativeai as genai
 from dotenv import load_dotenv
 import fitz  # PyMuPDF for PDF reading
+import docx  # For reading DOCX files
+import pandas as pd  # For reading Excel and CSV files
+from bs4 import BeautifulSoup  # For reading HTML files
 import wave
 import numpy as np
 import pyaudio
@@ -18,7 +21,7 @@ API_KEY = os.getenv("API_KEY")
 
 # Configure the Leo API SDK
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash") 
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 # Streamlit app setup
 st.set_page_config(page_title="Leo Chat Application", layout="wide")
@@ -53,7 +56,6 @@ def toggle_stop_speech():
 if st.button("🛑 Toggle Leo's Voice"):
     toggle_stop_speech()
 
-
 # Function for Leo to talk back
 def leo_talk(text):
     def speak():
@@ -64,13 +66,45 @@ def leo_talk(text):
     st.session_state.tts_thread = threading.Thread(target=speak, daemon=True)
     st.session_state.tts_thread.start()
 
-# Function to read and extract text from PDF documents
+# Function to extract text from PDF
 def extract_text_from_pdf(file):
     pdf_reader = fitz.open(stream=file.read(), filetype="pdf")
     text = ""
     for page in pdf_reader:
         text += page.get_text()
     return text
+
+# Function to extract text from DOCX
+def extract_text_from_docx(file):
+    doc = docx.Document(file)
+    text = ""
+    for para in doc.paragraphs:
+        text += para.text + "\n"
+    return text
+
+# Function to extract text from TXT
+def extract_text_from_txt(file):
+    text = file.read().decode("utf-8")
+    return text
+
+# Function to extract text from Excel (XLSX)
+def extract_text_from_excel(file):
+    df = pd.read_excel(file, sheet_name=None)
+    text = ""
+    for sheet_name, sheet_data in df.items():
+        text += f"Sheet: {sheet_name}\n"
+        text += sheet_data.to_string(index=False) + "\n\n"
+    return text
+
+# Function to extract text from CSV
+def extract_text_from_csv(file):
+    df = pd.read_csv(file)
+    return df.to_string(index=False)
+
+# Function to extract text from HTML
+def extract_text_from_html(file):
+    soup = BeautifulSoup(file, "html.parser")
+    return soup.get_text()
 
 # Function to interact with Leo API
 def get_leo_response(prompt):
@@ -104,14 +138,27 @@ audio_thread = threading.Thread(target=recognize_audio, args=(audio_queue,), dae
 audio_thread.start()
 
 # Upload document
-uploaded_file = st.file_uploader("Upload a PDF document (optional)", type="pdf")
+uploaded_file = st.file_uploader("Upload a document (PDF, DOCX, TXT, XLSX, CSV, HTML)", type=["pdf", "docx", "txt", "xlsx", "csv", "html"])
 
 if uploaded_file is not None:
-    # Extract text from the uploaded PDF
-    document_text = extract_text_from_pdf(uploaded_file)
+    file_extension = uploaded_file.name.split('.')[-1].lower()
+
+    if file_extension == "pdf":
+        document_text = extract_text_from_pdf(uploaded_file)
+    elif file_extension == "docx":
+        document_text = extract_text_from_docx(uploaded_file)
+    elif file_extension == "txt":
+        document_text = extract_text_from_txt(uploaded_file)
+    elif file_extension == "xlsx":
+        document_text = extract_text_from_excel(uploaded_file)
+    elif file_extension == "csv":
+        document_text = extract_text_from_csv(uploaded_file)
+    elif file_extension == "html":
+        document_text = extract_text_from_html(uploaded_file)
+    else:
+        document_text = "Sorry, this file type is not supported for text extraction."
+
     st.session_state.document_text = document_text
-    #st.session_state.messages.clear()  # Clear previous messages---------------------------------------------------------------------
-    #st.session_state.messages.append({"role": "assistant", "content": "Document loaded. You can now ask questions about it."})
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
@@ -222,23 +269,3 @@ if prompt := st.chat_input("What would you like to ask?"):
 
         # Make Leo talk
         leo_talk(leo_reply)
-
-# Add custom CSS for styling (if needed)
-st.markdown("""
-    <style>
-    .chat-message {
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        width: auto;
-    }
-    .user {
-        background-color: #e0f7fa;
-        align-self: flex-start;
-    }
-    .assistant {
-        background-color: #ffe0b2;
-        align-self: flex-end;
-    }
-    </style>
-""", unsafe_allow_html=True)
