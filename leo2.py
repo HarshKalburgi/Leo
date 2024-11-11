@@ -14,6 +14,11 @@ import speech_recognition as sr
 import threading
 import queue  # For managing audio processing
 import pyttsx3  # Text-to-speech for Leo's voice responses
+import markdown  # For reading markdown files
+import xml.etree.ElementTree as ET  # For reading XML files
+from PIL import Image  # For image handling
+import pytesseract  # OCR tool for extracting text from images
+import pyth  # For reading RTF files (replacing rtfparse)
 
 # Load environment variables
 load_dotenv()
@@ -106,6 +111,39 @@ def extract_text_from_html(file):
     soup = BeautifulSoup(file, "html.parser")
     return soup.get_text()
 
+# Function to extract text from Markdown
+def extract_text_from_markdown(file):
+    text = file.read().decode("utf-8")
+    return markdown.markdown(text)
+
+# Function to extract text from JavaScript
+def extract_text_from_js(file):
+    text = file.read().decode("utf-8")
+    return text
+
+# Function to extract text from Python
+def extract_text_from_python(file):
+    text = file.read().decode("utf-8")
+    return text
+
+# Function to extract text from CSS
+def extract_text_from_css(file):
+    text = file.read().decode("utf-8")
+    return text
+
+# Function to extract text from XML
+def extract_text_from_xml(file):
+    tree = ET.parse(file)
+    root = tree.getroot()
+    text = ET.tostring(root, encoding='unicode')
+    return text
+
+# Function to extract text from RTF
+def extract_text_from_rtf(file):
+    rtf = file.read()
+    text = rtfparse.parse(rtf)
+    return text
+
 # Function to interact with Leo API
 def get_leo_response(prompt):
     try:
@@ -138,7 +176,7 @@ audio_thread = threading.Thread(target=recognize_audio, args=(audio_queue,), dae
 audio_thread.start()
 
 # Upload document
-uploaded_file = st.file_uploader("Upload a document (PDF, DOCX, TXT, XLSX, CSV, HTML)", type=["pdf", "docx", "txt", "xlsx", "csv", "html"])
+uploaded_file = st.file_uploader("Upload a document (PDF, DOCX, TXT, XLSX, CSV, HTML, JS, Python, CSS, Markdown, XML, RTF)", type=["pdf", "docx", "txt", "xlsx", "csv", "html", "js", "py", "css", "md", "xml", "rtf"])
 
 if uploaded_file is not None:
     file_extension = uploaded_file.name.split('.')[-1].lower()
@@ -155,6 +193,18 @@ if uploaded_file is not None:
         document_text = extract_text_from_csv(uploaded_file)
     elif file_extension == "html":
         document_text = extract_text_from_html(uploaded_file)
+    elif file_extension == "js":
+        document_text = extract_text_from_js(uploaded_file)
+    elif file_extension == "py":
+        document_text = extract_text_from_python(uploaded_file)
+    elif file_extension == "css":
+        document_text = extract_text_from_css(uploaded_file)
+    elif file_extension == "md":
+        document_text = extract_text_from_markdown(uploaded_file)
+    elif file_extension == "xml":
+        document_text = extract_text_from_xml(uploaded_file)
+    elif file_extension == "rtf":
+        document_text = extract_text_from_rtf(uploaded_file)
     else:
         document_text = "Sorry, this file type is not supported for text extraction."
 
